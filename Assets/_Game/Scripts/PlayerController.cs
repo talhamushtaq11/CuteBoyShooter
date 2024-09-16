@@ -18,6 +18,8 @@ namespace MoreMountains.InfiniteRunnerEngine
         Vector2 crouchingColliderSize = new Vector2(1.15f, 0.75f);
         Vector2 crouchingColliderOffset = new Vector2(-0.1f, -0.15f);
 
+        //private bool isDashing = false;
+
         private void Start()
         {
             boxCollider = GetComponent<BoxCollider2D>();
@@ -25,14 +27,12 @@ namespace MoreMountains.InfiniteRunnerEngine
 
         private void Update()
         {
-            if(Input.GetKey(KeyCode.Z))
+            if (Input.GetKey(KeyCode.Z))
             {
-                anim.SetBool("dash", true);
                 Dash();
             }
             else
             {
-                anim.SetBool("dash", false);
                 Stand();
             }
 
@@ -40,15 +40,25 @@ namespace MoreMountains.InfiniteRunnerEngine
             {
                 Shoot();
             }
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                LevelManager.Instance.PlayerJump();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.tag == "HitCollider" || collision.gameObject.tag == "Enemy")
             {
-                Debug.Log("Collider = " + collision.gameObject.name);
                 LevelManager.Instance.KillCharacter(this.GetComponent<PlayableCharacter>());
                 //LevelManager.Instance.CallAllCharactersDead();
+            }
+            
+            if (collision.gameObject.tag == "Collectable")
+            {
+                LevelManager.Instance.CollectCoin();
+                Destroy(collision.gameObject.transform.parent.gameObject);
             }
         }
 
@@ -57,14 +67,16 @@ namespace MoreMountains.InfiniteRunnerEngine
             Instantiate(bullet, firePosition.position, Quaternion.identity);
         }
 
-        void Dash()
+        public void Dash()
         {
+            anim.SetBool("dash", true);
             boxCollider.size = crouchingColliderSize;
             boxCollider.offset = crouchingColliderOffset;
         }
 
-        void Stand()
+        public void Stand()
         {
+            anim.SetBool("dash", false);
             boxCollider.size = standingColliderSize;
             boxCollider.offset = standingColliderOffset;
         }

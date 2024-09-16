@@ -5,6 +5,8 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MoreMountains.Tools;
+using UnityEngine.UI;
+using TMPro;
 
 namespace MoreMountains.InfiniteRunnerEngine
 {	
@@ -91,7 +93,18 @@ namespace MoreMountains.InfiniteRunnerEngine
 		protected float _temporarySpeedFactor;
 		protected float _temporarySpeedFactorRemainingTime;
 		protected float _temporarySavedSpeed;
-			
+
+		[SerializeField] TMP_Text coinsText;
+		[SerializeField] TMP_Text enemiesText;
+		[SerializeField] TMP_Text stepsText;
+
+		int coinsCollected;
+		int enemiesKilled;
+		int totalSteps;
+
+		float elapsedTime = 0f;
+		float timeInterval = 1f;
+
 		/// <summary>
 		/// Initialization
 		/// </summary>
@@ -225,10 +238,30 @@ namespace MoreMountains.InfiniteRunnerEngine
 			MMEventManager.TriggerEvent(new MMGameEvent("PlayableCharactersInstantiated"));
 	    }
 
+		public void PlayerJump()
+        {
+			CurrentPlayableCharacters[0].GetComponent<Jumper>().Jump();
+		}
+
+		public void PlayerStartDash()
+		{
+			CurrentPlayableCharacters[0].GetComponent<PlayerController>().Dash();
+		}
+
+		public void PlayerEndDash()
+		{
+			CurrentPlayableCharacters[0].GetComponent<PlayerController>().Stand();
+		}
+
+		public void PlayerShoot()
+		{
+			CurrentPlayableCharacters[0].GetComponent<PlayerController>().Shoot();
+		}
+
 		/// <summary>
 		/// Resets the level : repops dead characters, sets everything up for a new game
 		/// </summary>
-	    public virtual void ResetLevel()
+		public virtual void ResetLevel()
 	    {
 	        InstantiateCharacters();
 	        PrepareStart();
@@ -286,6 +319,16 @@ namespace MoreMountains.InfiniteRunnerEngine
 			HandleSpeedFactor ();
 
 			RunningTime+=Time.deltaTime;
+
+			elapsedTime += Time.deltaTime;
+			if (elapsedTime >= timeInterval)
+			{
+				TakeStep();
+
+				// Reset elapsed time
+				elapsedTime = 0;
+				//elapsedTime -= timeInterval; // To handle cases where elapsedTime is more than interval
+			}
 		}
 		
 		/// <summary>
@@ -486,10 +529,43 @@ namespace MoreMountains.InfiniteRunnerEngine
 	        }
 	    }
 
-	    /// <summary>
-	    /// Override this if needed
-	    /// </summary>
-	    protected virtual void OnEnable()
+		public void CollectCoin()
+        {
+			coinsCollected++;
+			coinsText.text = coinsCollected.ToString();
+		}
+
+		public int GetTotalCoinsCollected()
+		{
+			return coinsCollected;
+		}
+
+		public void KillEnemy()
+		{
+			enemiesKilled++;
+			enemiesText.text = enemiesKilled.ToString();
+		}
+
+		public int GetTotalEnemiesKilled()
+		{
+			return enemiesKilled;
+		}
+
+		public void TakeStep()
+        {
+			totalSteps++;
+			stepsText.text = totalSteps.ToString();
+		}
+
+		public int GetTotalStepsTaken()
+		{
+			return totalSteps;
+		}
+
+		/// <summary>
+		/// Override this if needed
+		/// </summary>
+		protected virtual void OnEnable()
 	    {
 
 	    }

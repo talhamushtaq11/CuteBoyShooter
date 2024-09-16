@@ -82,6 +82,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 
 		public virtual void Jump()
 		{
+			GetComponent<PlayerController>().Stand();
 			if (!EvaluateJumpConditions())
 			{
 				return;
