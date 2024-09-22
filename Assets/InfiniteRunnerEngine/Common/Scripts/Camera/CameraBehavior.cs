@@ -101,6 +101,10 @@ namespace MoreMountains.InfiniteRunnerEngine
 				{
 					return;
 				}
+				if(GameManager.Instance.Status == GameManager.GameStatus.LifeLost || GameManager.Instance.Status == GameManager.GameStatus.GameOver)
+				{
+					return;
+                }
 			}
 
 			// if the game manager has more than one playable character registered

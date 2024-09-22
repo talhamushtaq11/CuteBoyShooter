@@ -240,17 +240,20 @@ namespace MoreMountains.InfiniteRunnerEngine
 
 		public void PlayerJump()
         {
-			CurrentPlayableCharacters[0].GetComponent<Jumper>().Jump();
+			if (CurrentPlayableCharacters.Count > 0)
+				CurrentPlayableCharacters[0].GetComponent<PlayerController>().Jump();
 		}
 
 		public void PlayerStartDash()
 		{
-			CurrentPlayableCharacters[0].GetComponent<PlayerController>().Dash();
+			if(CurrentPlayableCharacters.Count > 0)
+				CurrentPlayableCharacters[0].GetComponent<PlayerController>().Dash();
 		}
 
 		public void PlayerEndDash()
 		{
-			CurrentPlayableCharacters[0].GetComponent<PlayerController>().Stand();
+			if (CurrentPlayableCharacters.Count > 0)
+				CurrentPlayableCharacters[0].GetComponent<PlayerController>().Stand();
 		}
 
 		public void PlayerShoot()
@@ -487,7 +490,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 		protected virtual IEnumerator KillCharacterCo(PlayableCharacter player)
 		{
 			LevelManager.Instance.CurrentPlayableCharacters.Remove(player);
-			player.Die();
+			//player.Die();
 			//yield return new WaitForSeconds(0.5f);
 			yield return new WaitForSeconds(0f);
 	        	        
@@ -553,6 +556,18 @@ namespace MoreMountains.InfiniteRunnerEngine
 
 		public void TakeStep()
         {
+			if (GameManager.Instance != null)
+			{
+				if (GameManager.Instance.Status == GameManager.GameStatus.Paused)
+				{
+					return;
+				}
+				if (GameManager.Instance.Status == GameManager.GameStatus.LifeLost || GameManager.Instance.Status == GameManager.GameStatus.GameOver)
+				{
+					return;
+				}
+			}
+
 			totalSteps++;
 			stepsText.text = totalSteps.ToString();
 		}

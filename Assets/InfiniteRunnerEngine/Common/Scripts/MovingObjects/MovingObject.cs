@@ -47,7 +47,18 @@ namespace MoreMountains.InfiniteRunnerEngine
 		// On update(), we move the object based on the level's speed and the object's speed, and apply acceleration
 		protected virtual void Update ()
 		{
-	    	Move();
+			if (GameManager.Instance != null)
+			{
+				if (GameManager.Instance.Status == GameManager.GameStatus.Paused)
+				{
+					return;
+				}
+				if (GameManager.Instance.Status == GameManager.GameStatus.LifeLost || GameManager.Instance.Status == GameManager.GameStatus.GameOver)
+				{
+					return;
+				}
+			}
+			Move();
 			//MMDebug.DebugLogTime (this.name+"movement : " + _movement);
 	    }
 

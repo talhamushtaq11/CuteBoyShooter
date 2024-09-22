@@ -13,10 +13,13 @@ namespace MoreMountains.InfiniteRunnerEngine
         private BoxCollider2D boxCollider;
 
         Vector2 standingColliderSize = new Vector2(0.85f, 1.3f);
-        Vector2 standingColliderOffset = new Vector2(-0.15f, 0f);
-        
+        Vector2 standingColliderOffset = new Vector2(-0.15f, 0.05f);
+
         Vector2 crouchingColliderSize = new Vector2(1.15f, 0.75f);
         Vector2 crouchingColliderOffset = new Vector2(-0.1f, -0.15f);
+
+        Vector2 deathColliderSize = new Vector2(1.15f, 0.5f);
+        Vector2 deathColliderOffset = new Vector2(0f, -0.05f);
 
         //private bool isDashing = false;
 
@@ -27,14 +30,14 @@ namespace MoreMountains.InfiniteRunnerEngine
 
         private void Update()
         {
-            if (Input.GetKey(KeyCode.Z))
-            {
-                Dash();
-            }
-            else
-            {
-                Stand();
-            }
+            //if (Input.GetKey(KeyCode.Z))
+            //{
+            //    Dash();
+            //}
+            //else
+            //{
+            //    Stand();
+            //}
 
             if (Input.GetKeyDown(KeyCode.X))
             {
@@ -52,14 +55,22 @@ namespace MoreMountains.InfiniteRunnerEngine
             if (collision.gameObject.tag == "HitCollider" || collision.gameObject.tag == "Enemy")
             {
                 LevelManager.Instance.KillCharacter(this.GetComponent<PlayableCharacter>());
+                Death();
                 //LevelManager.Instance.CallAllCharactersDead();
             }
-            
+
             if (collision.gameObject.tag == "Collectable")
             {
                 LevelManager.Instance.CollectCoin();
                 Destroy(collision.gameObject.transform.parent.gameObject);
             }
+        }
+
+        public void Death()
+        {
+            anim.SetTrigger("isDead");
+            boxCollider.size = deathColliderSize;
+            boxCollider.offset = deathColliderOffset;
         }
 
         public void Shoot()
@@ -69,6 +80,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 
         public void Dash()
         {
+            Debug.Log("Dash Called");
             anim.SetBool("dash", true);
             boxCollider.size = crouchingColliderSize;
             boxCollider.offset = crouchingColliderOffset;
@@ -76,9 +88,15 @@ namespace MoreMountains.InfiniteRunnerEngine
 
         public void Stand()
         {
+            Debug.Log("Stand Called");
             anim.SetBool("dash", false);
             boxCollider.size = standingColliderSize;
             boxCollider.offset = standingColliderOffset;
+        }
+
+        public void Jump()
+        {
+            GetComponent<Jumper>().Jump();
         }
     }
 }

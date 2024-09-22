@@ -45,6 +45,18 @@ namespace MoreMountains.InfiniteRunnerEngine
 		/// </summary>
 	    protected virtual void Update()
 		{
+			if (GameManager.Instance != null)
+			{
+				if (GameManager.Instance.Status == GameManager.GameStatus.Paused)
+				{
+					return;
+				}
+				if (GameManager.Instance.Status == GameManager.GameStatus.LifeLost || GameManager.Instance.Status == GameManager.GameStatus.GameOver)
+				{
+					return;
+				}
+			}
+
 			if ((_rawImage == null) && (_renderer == null))
 			{
 				return;

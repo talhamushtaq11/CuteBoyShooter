@@ -7,8 +7,21 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSelectionManager : MonoBehaviour
 {
+    public static CharacterSelectionManager instance;
     public GameObject[] CharacterBtns;
     public Sprite selected;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +43,7 @@ public class CharacterSelectionManager : MonoBehaviour
     }
     public void onCharacterPurchase(int i)
     {
+        Debug.Log("Price = " + PlayerPrefs.GetInt("price"));
         if (PlayerPrefs.GetInt("price") > 7000)
         {
             PlayerPrefs.SetInt("price", (PlayerPrefs.GetInt("price") - 7000));
