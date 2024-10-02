@@ -27,6 +27,7 @@ namespace MoreMountains.InfiniteRunnerEngine
             if (collision.gameObject.tag == "Enemy")
             {
                 Debug.Log("Collider = " + collision.gameObject.name);
+                MF.SoundManager.Instance.playSFX(MF.SoundClips.EnemyDeath);
 
                 LevelManager.Instance.KillEnemy();
     

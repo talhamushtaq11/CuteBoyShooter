@@ -94,9 +94,9 @@ namespace MoreMountains.InfiniteRunnerEngine
 		protected float _temporarySpeedFactorRemainingTime;
 		protected float _temporarySavedSpeed;
 
-		[SerializeField] TMP_Text coinsText;
-		[SerializeField] TMP_Text enemiesText;
-		[SerializeField] TMP_Text stepsText;
+		[SerializeField] public TMP_Text coinsText;
+		[SerializeField] public TMP_Text enemiesText;
+		[SerializeField] public TMP_Text stepsText;
 
 		int coinsCollected;
 		int enemiesKilled;
@@ -511,11 +511,11 @@ namespace MoreMountains.InfiniteRunnerEngine
 		protected virtual void AllCharactersAreDead()
 		{
 	        // if we've specified an effect for when a life is lost, we instantiate it at the camera's position
-	        if (LifeLostExplosion != null)
-	        {
-	            GameObject explosion = Instantiate(LifeLostExplosion);
-	            explosion.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y,0) ;
-	        }
+	        //if (LifeLostExplosion != null)
+	        //{
+	        //    GameObject explosion = Instantiate(LifeLostExplosion);
+	        //    explosion.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y,0) ;
+	        //}
 
 	        // we've just lost a life
 	        GameManager.Instance.SetStatus(GameManager.GameStatus.LifeLost);
@@ -527,6 +527,9 @@ namespace MoreMountains.InfiniteRunnerEngine
 	        if (GameManager.Instance.CurrentLives<=0)
 			{
 	            GUIManager.Instance.SetGameOverScreen(true);
+				MF.SoundManager.Instance.playSFXDelayedGO(2.0f);
+
+
 	            GameManager.Instance.SetStatus(GameManager.GameStatus.GameOver);
 				MMEventManager.TriggerEvent(new MMGameEvent("GameOver"));
 	        }

@@ -56,6 +56,7 @@ namespace MoreMountains.InfiniteRunnerEngine
             {
                 LevelManager.Instance.KillCharacter(this.GetComponent<PlayableCharacter>());
                 Death();
+                MF.SoundManager.Instance.playSFX(MF.SoundClips.Kill);
                 //LevelManager.Instance.CallAllCharactersDead();
             }
 
@@ -63,6 +64,7 @@ namespace MoreMountains.InfiniteRunnerEngine
             {
                 LevelManager.Instance.CollectCoin();
                 Destroy(collision.gameObject.transform.parent.gameObject);
+                MF.SoundManager.Instance.playSFX(MF.SoundClips.Fire);
             }
         }
 

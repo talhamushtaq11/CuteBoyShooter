@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.Tools;
+using TMPro;
 
 namespace MoreMountains.InfiniteRunnerEngine
 {	
@@ -32,7 +33,13 @@ namespace MoreMountains.InfiniteRunnerEngine
 		public GameObject GUIHeartEmpty;
 		/// the gameobject to use to represent lost lives
 		public GameObject GUIHeartFull;
-						
+
+		public TMP_Text GOCoinsText;
+		public TMP_Text GOStepsText;
+		public TMP_Text GOEnemyText;
+
+
+
 		/// <summary>
 		/// Initialization
 		/// </summary>
@@ -130,13 +137,35 @@ namespace MoreMountains.InfiniteRunnerEngine
 		public virtual void SetGameOverScreen(bool state)
 		{
 			GameOverScreen.SetActive(state);
-	        Text gameOverScreenTextObject = GameOverScreen.transform.Find("GameOverScreenText").GetComponent<Text>();
-	        if (gameOverScreenTextObject!= null)
+			TMP_Text gameOverScreenStepsText = GOStepsText;
+			TMP_Text gameOverScreenCoinsText = GOCoinsText;
+			TMP_Text gameOverScreenMonsterText = GOEnemyText;
+
+			if (gameOverScreenStepsText != null)
 	        {
-	            gameOverScreenTextObject.text="GAME OVER\nYOUR SCORE : "+Mathf.Round(GameManager.Instance.Points);
-	        }
+				gameOverScreenStepsText.text = LevelManager.Instance.stepsText.text;
+				gameOverScreenCoinsText.text = LevelManager.Instance.coinsText.text;
+				gameOverScreenMonsterText.text = LevelManager.Instance.enemiesText.text;
+			}
 		}
-			
+
+		Transform FindChildRecursive(Transform parent, string childName)
+		{
+			foreach (Transform child in parent)
+			{
+				if (child.name == childName)
+				{
+					return child;
+				}
+
+				Transform found = FindChildRecursive(child, childName);
+				if (found != null)
+				{
+					return found;
+				}
+			}
+			return null; // If the child with the specified name is not found
+		}
 		/// <summary>
 		/// Sets the text to the game manager's points.
 		/// </summary>

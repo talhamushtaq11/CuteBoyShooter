@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using MoreMountains.InfiniteRunnerEngine;
+using MF;
 
 public class GamplayController : MonoBehaviour
 {
@@ -11,46 +12,52 @@ public class GamplayController : MonoBehaviour
 
     void Start()
     {
-        SoundManager.Instance.playBgm(SoundClips.GP);
+        MF.SoundManager.Instance.playBgm(SoundClips.GP);
 
     }
 
     public void RestartBtnClicked()
     {
-        SoundManager.Instance.playSFX(SoundClips.button);
+        MF.SoundManager.Instance.playSFX(SoundClips.button);
 
         SceneManager.LoadScene("Gameplay");
 
     }
     public void HomeBtnClicked()
     {
-        SoundManager.Instance.playSFX(SoundClips.button);
+         MF.SoundManager.Instance.playSFX(SoundClips.button);
 
         SceneManager.LoadScene("MainMenu");
 
     }
     public void ResumeBtnClicked()
     {
-        SoundManager.Instance.playSFX(SoundClips.button);
+
 
 
         Time.timeScale = 1;
+        GameManager.Instance.UnPause();
+
+         MF.SoundManager.Instance.playSFX(SoundClips.button);
+
 
     }
     public void PauseBtnClicked()
     {
-        SoundManager.Instance.playSFX(SoundClips.button);
+        GameManager.Instance.Pause();
         popUps[0].SetActive(true);
 
         Time.timeScale = 0;
+         MF.SoundManager.Instance.playSFX(SoundClips.button);
+
 
     }
     public void onMusicButtonClickEvents()
     {
-        if (SoundManager.Instance.audio.isPlaying)
-            SoundManager.Instance.Stop();
+        if ( MF.SoundManager.Instance.GetComponent<AudioSource>().isPlaying)
+             MF.SoundManager.Instance.Stop();
         else
-            SoundManager.Instance.playBgm(SoundClips.GP);
+             MF.SoundManager.Instance.playBgm(SoundClips.GP);
 
 
     }

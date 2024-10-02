@@ -29,6 +29,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 					break;
 				// we try to trigger an achievement for pressing pause (yes these achievements are easy to get)
 				case "Pause":
+					Debug.Log("here");
 					MMAchievementManager.UnlockAchievement("timeStop");
 					break;
 				// every time we jump, we try to trigger two achievements : one for jumping for the first time, one obtained after jumping ten times.

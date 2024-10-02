@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace MF{
 [SerializeField]
 public enum SoundClips
 {
@@ -40,6 +41,16 @@ public class SoundManager : MonoBehaviour
     {
         audio.PlayOneShot(allSfx[((int)clips)]);
     }
+    public void playSFXDelayedGO(float time)
+    {
+        Invoke("playGO", time);
+    }
+    void playGO()
+    {
+        Stop();
+         audio.loop = true;
+        audio.PlayOneShot(allSfx[((int)SoundClips.gameOver)]);
+    }
 
     public void Stop()
     {
@@ -58,3 +69,6 @@ public class SoundManager : MonoBehaviour
         audio.Stop();
     }
 }
+
+
+};
