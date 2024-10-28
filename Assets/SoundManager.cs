@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MF{
+//namespace MF{
 [SerializeField]
 public enum SoundClips
 {
@@ -71,4 +71,4 @@ public class SoundManager : MonoBehaviour
 }
 
 
-};
+//};

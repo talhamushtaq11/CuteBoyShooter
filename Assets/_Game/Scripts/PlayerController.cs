@@ -9,6 +9,7 @@ namespace MoreMountains.InfiniteRunnerEngine
         public Animator anim;
         public Transform firePosition;
         public GameObject bullet;
+        public GameObject jeepPlayer;
 
         private BoxCollider2D boxCollider;
 
@@ -21,7 +22,11 @@ namespace MoreMountains.InfiniteRunnerEngine
         Vector2 deathColliderSize = new Vector2(1.15f, 0.5f);
         Vector2 deathColliderOffset = new Vector2(0f, -0.05f);
 
+        Vector2 jeepColliderSize = new Vector2(1.5f, 1.5f);
+        Vector2 jeepColliderOffset = new Vector2(0f, 0.32f);
+
         //private bool isDashing = false;
+        private bool isPlayerDamageOn = true;
 
         private void Start()
         {
@@ -54,17 +59,28 @@ namespace MoreMountains.InfiniteRunnerEngine
         {
             if (collision.gameObject.tag == "HitCollider" || collision.gameObject.tag == "Enemy")
             {
-                LevelManager.Instance.KillCharacter(this.GetComponent<PlayableCharacter>());
-                Death();
-                MF.SoundManager.Instance.playSFX(MF.SoundClips.Kill);
-                //LevelManager.Instance.CallAllCharactersDead();
+                if (isPlayerDamageOn)
+                {
+                    LevelManager.Instance.KillCharacter(this.GetComponent<PlayableCharacter>());
+                    Death();
+                    //MF.SoundManager.Instance.playSFX(MF.SoundClips.Kill);
+                    //LevelManager.Instance.CallAllCharactersDead();
+                }
             }
 
             if (collision.gameObject.tag == "Collectable")
             {
                 LevelManager.Instance.CollectCoin();
                 Destroy(collision.gameObject.transform.parent.gameObject);
-                MF.SoundManager.Instance.playSFX(MF.SoundClips.Fire);
+                //MF.SoundManager.Instance.playSFX(MF.SoundClips.Fire);
+            }
+
+            if(collision.gameObject.tag == "Jeep")
+            {
+                LevelManager.Instance.isJeepCollected = true;
+                Destroy(collision.gameObject.transform.parent.gameObject);
+                SetJeep();
+                StartCoroutine(StartJeepTimer());
             }
         }
 
@@ -83,22 +99,57 @@ namespace MoreMountains.InfiniteRunnerEngine
         public void Dash()
         {
             Debug.Log("Dash Called");
-            anim.SetBool("dash", true);
-            boxCollider.size = crouchingColliderSize;
-            boxCollider.offset = crouchingColliderOffset;
+            if (!LevelManager.Instance.isJeepCollected)
+            {
+                anim.SetBool("dash", true);
+                boxCollider.size = crouchingColliderSize;
+                boxCollider.offset = crouchingColliderOffset;
+            }
         }
 
         public void Stand()
         {
             Debug.Log("Stand Called");
-            anim.SetBool("dash", false);
-            boxCollider.size = standingColliderSize;
-            boxCollider.offset = standingColliderOffset;
+            if (!LevelManager.Instance.isJeepCollected)
+            {
+                anim.SetBool("dash", false);
+                boxCollider.size = standingColliderSize;
+                boxCollider.offset = standingColliderOffset;
+            }
         }
 
         public void Jump()
         {
             GetComponent<Jumper>().Jump();
+        }
+
+        public void SetJeep()
+        {
+            jeepPlayer.SetActive(true);
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            boxCollider.size = jeepColliderSize;
+            boxCollider.offset = jeepColliderOffset;
+        }
+
+        public void RemoveJeep()
+        {
+            gameObject.GetComponent<SpriteRenderer>().enabled = true;
+            jeepPlayer.SetActive(false);
+            Stand();
+            Invoke(nameof(ResetPlayerDamage), 2);
+        }
+
+        IEnumerator StartJeepTimer()
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(8, 16));
+            isPlayerDamageOn = false;
+            LevelManager.Instance.isJeepCollected = false;
+            RemoveJeep();
+        }
+
+        public void ResetPlayerDamage()
+        {
+            isPlayerDamageOn = true;
         }
     }
 }

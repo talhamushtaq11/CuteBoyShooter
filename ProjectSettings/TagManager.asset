@@ -8,6 +8,8 @@ TagManager:
   - Obstacle
   - HitCollider
   - Enemy
+  - Collectable
+  - Jeep
   layers:
   - Default
   - TransparentFX

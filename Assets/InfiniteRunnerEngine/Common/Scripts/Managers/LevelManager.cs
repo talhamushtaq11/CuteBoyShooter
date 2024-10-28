@@ -105,6 +105,8 @@ namespace MoreMountains.InfiniteRunnerEngine
 		float elapsedTime = 0f;
 		float timeInterval = 1f;
 
+		public bool isJeepCollected;
+
 		/// <summary>
 		/// Initialization
 		/// </summary>
@@ -527,7 +529,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 	        if (GameManager.Instance.CurrentLives<=0)
 			{
 	            GUIManager.Instance.SetGameOverScreen(true);
-				MF.SoundManager.Instance.playSFXDelayedGO(2.0f);
+				//MF.SoundManager.Instance.playSFXDelayedGO(2.0f);
 
 
 	            GameManager.Instance.SetStatus(GameManager.GameStatus.GameOver);
