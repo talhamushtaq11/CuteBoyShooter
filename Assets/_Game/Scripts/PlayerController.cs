@@ -10,6 +10,7 @@ namespace MoreMountains.InfiniteRunnerEngine
         public Transform firePosition;
         public GameObject bullet;
         public GameObject jeepPlayer;
+        public GameObject aeroplanePlayer;
 
         private BoxCollider2D boxCollider;
 
@@ -49,7 +50,7 @@ namespace MoreMountains.InfiniteRunnerEngine
                 Shoot();
             }
 
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 LevelManager.Instance.PlayerJump();
             }
@@ -79,8 +80,19 @@ namespace MoreMountains.InfiniteRunnerEngine
             {
                 LevelManager.Instance.isJeepCollected = true;
                 Destroy(collision.gameObject.transform.parent.gameObject);
-                SetJeep();
-                StartCoroutine(StartJeepTimer());
+                SetPowerUp(true);
+                StartCoroutine(StartPowerUpTimer(true));
+            }
+
+            if (collision.gameObject.tag == "Aeroplane")
+            {
+                Debug.Log("Aeroplane Collected");
+
+                //LevelManager.Instance.SetPlayerJumpCount(2);
+                LevelManager.Instance.isAeroplaneCollected = true;
+                Destroy(collision.gameObject.transform.parent.gameObject);
+                SetPowerUp(false);
+                StartCoroutine(StartPowerUpTimer(false));
             }
         }
 
@@ -99,7 +111,7 @@ namespace MoreMountains.InfiniteRunnerEngine
         public void Dash()
         {
             Debug.Log("Dash Called");
-            if (!LevelManager.Instance.isJeepCollected)
+            if (!LevelManager.Instance.isJeepCollected && !LevelManager.Instance.isAeroplaneCollected)
             {
                 anim.SetBool("dash", true);
                 boxCollider.size = crouchingColliderSize;
@@ -110,7 +122,7 @@ namespace MoreMountains.InfiniteRunnerEngine
         public void Stand()
         {
             Debug.Log("Stand Called");
-            if (!LevelManager.Instance.isJeepCollected)
+            if (!LevelManager.Instance.isJeepCollected && !LevelManager.Instance.isAeroplaneCollected)
             {
                 anim.SetBool("dash", false);
                 boxCollider.size = standingColliderSize;
@@ -123,28 +135,50 @@ namespace MoreMountains.InfiniteRunnerEngine
             GetComponent<Jumper>().Jump();
         }
 
-        public void SetJeep()
+        public void SetJumpCount(int count)
         {
-            jeepPlayer.SetActive(true);
+            GetComponent<Jumper>().NumberOfJumpsAllowed = count;
+            //GetComponent<Jumper>()._numberOfJumpsLeft = count;
+        }
+
+        public void SetPowerUp(bool isJeep)
+        {
+            if (isJeep)
+                jeepPlayer.SetActive(true);
+            else
+                aeroplanePlayer.SetActive(true);
+
             gameObject.GetComponent<SpriteRenderer>().enabled = false;
             boxCollider.size = jeepColliderSize;
             boxCollider.offset = jeepColliderOffset;
         }
 
-        public void RemoveJeep()
+        public void RemovePowerUp(bool isJeep)
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
-            jeepPlayer.SetActive(false);
+            if (isJeep)
+                jeepPlayer.SetActive(false);
+            else
+                aeroplanePlayer.SetActive(false);
             Stand();
             Invoke(nameof(ResetPlayerDamage), 2);
         }
 
-        IEnumerator StartJeepTimer()
+        IEnumerator StartPowerUpTimer(bool isJeep)
         {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(8, 16));
+            if(isJeep)
+                yield return new WaitForSeconds(UnityEngine.Random.Range(8, 16));
+            else
+                yield return new WaitForSeconds(UnityEngine.Random.Range(16, 20));
             isPlayerDamageOn = false;
-            LevelManager.Instance.isJeepCollected = false;
-            RemoveJeep();
+            if(isJeep)
+                LevelManager.Instance.isJeepCollected = false;
+            else
+            {
+                LevelManager.Instance.isAeroplaneCollected = false;
+                //LevelManager.Instance.SetPlayerJumpCount(1);
+            }
+            RemovePowerUp(isJeep);
         }
 
         public void ResetPlayerDamage()

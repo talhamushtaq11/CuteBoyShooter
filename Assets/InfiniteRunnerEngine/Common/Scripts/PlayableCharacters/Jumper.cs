@@ -82,6 +82,12 @@ namespace MoreMountains.InfiniteRunnerEngine
 
 		public virtual void Jump()
 		{
+			if (LevelManager.Instance.isAeroplaneCollected)
+			{
+				PerformMultipleJumps();
+				return;
+			}
+
 			GetComponent<PlayerController>().Stand();
 			if (!EvaluateJumpConditions())
 			{
@@ -89,6 +95,16 @@ namespace MoreMountains.InfiniteRunnerEngine
 			}
 
 			PerformJump ();
+		}
+
+		protected virtual void PerformMultipleJumps()
+		{
+			if (_rigidbodyInterface.Velocity.y < 0)
+			{
+				_rigidbodyInterface.Velocity = Vector3.zero;
+			}
+
+			_rigidbodyInterface.AddForce(Vector3.up * (JumpForce/2));
 		}
 
 		protected virtual void PerformJump() 

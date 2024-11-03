@@ -106,6 +106,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 		float timeInterval = 1f;
 
 		public bool isJeepCollected;
+		public bool isAeroplaneCollected;
 
 		/// <summary>
 		/// Initialization
@@ -239,6 +240,12 @@ namespace MoreMountains.InfiniteRunnerEngine
 	        }
 			MMEventManager.TriggerEvent(new MMGameEvent("PlayableCharactersInstantiated"));
 	    }
+
+		public void SetPlayerJumpCount(int count)
+		{
+			if (CurrentPlayableCharacters.Count > 0)
+				CurrentPlayableCharacters[0].GetComponent<PlayerController>().SetJumpCount(count);
+		}
 
 		public void PlayerJump()
         {

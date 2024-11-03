@@ -4433,6 +4433,7 @@ MonoBehaviour:
   enemiesText: {fileID: 1145744317}
   stepsText: {fileID: 333325918}
   isJeepCollected: 0
+  isAeroplaneCollected: 0
 --- !u!4 &1110760808
 Transform:
   m_ObjectHideFlags: 0
