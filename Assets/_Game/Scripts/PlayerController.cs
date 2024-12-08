@@ -185,5 +185,17 @@ namespace MoreMountains.InfiniteRunnerEngine
         {
             isPlayerDamageOn = true;
         }
+
+        public void DisablePlayerDamage(float time)
+        {
+            StartCoroutine(StartPlayerDamageTime(time));
+        }
+
+        IEnumerator StartPlayerDamageTime(float time)
+        {
+            isPlayerDamageOn = false;
+            yield return new WaitForSeconds(time);
+            isPlayerDamageOn = true;
+        }
     }
 }

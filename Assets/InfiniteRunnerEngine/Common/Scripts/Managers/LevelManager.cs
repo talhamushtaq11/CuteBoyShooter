@@ -29,6 +29,7 @@ namespace MoreMountains.InfiniteRunnerEngine
 		public List<PlayableCharacter> PlayableCharacters;
 		/// the list of playable characters currently instantiated in the game - use this to know what characters ARE currently in your level at runtime
 		public List<PlayableCharacter> CurrentPlayableCharacters { get; set; }
+		public GameObject instantiatedPlayerObject;
 		/// the x distance between each character
 		public float DistanceBetweenCharacters = 1f;
 		/// the elapsed time since the start of the level
@@ -186,6 +187,16 @@ namespace MoreMountains.InfiniteRunnerEngine
 	        LevelStart();
 	    }
 
+		public virtual void LevelRestart()
+        {
+			Destroy(instantiatedPlayerObject);
+			GameManager.Instance.UnPause();
+			GUIManager.Instance.SetGameOverScreen(false);
+			LevelStart();
+			InstantiateCharacters();
+			CurrentPlayableCharacters[0].GetComponent<PlayerController>().DisablePlayerDamage(2);
+		}
+
 		/// <summary>
 		/// Handles the start of the level : starts the autoincrementation of the score, sets the proper status and triggers the corresponding event.
 		/// </summary>
@@ -213,7 +224,9 @@ namespace MoreMountains.InfiniteRunnerEngine
                 newPlayer.SetInitialPosition(newPlayer.transform.position);
                 CurrentPlayableCharacters.Add(newPlayer);
                 MMEventManager.TriggerEvent(new MMGameEvent("PlayableCharactersInstantiated"));
-                return;
+				instantiatedPlayerObject = newPlayer.gameObject;
+
+				return;
             }
 
             if (PlayableCharacters == null)
@@ -237,7 +250,9 @@ namespace MoreMountains.InfiniteRunnerEngine
 				instance.SetInitialPosition(instance.transform.position);
 				// we feed it to the game manager
 	            CurrentPlayableCharacters.Add(instance);
-	        }
+
+				instantiatedPlayerObject = instance.gameObject;
+			}
 			MMEventManager.TriggerEvent(new MMGameEvent("PlayableCharactersInstantiated"));
 	    }
 
